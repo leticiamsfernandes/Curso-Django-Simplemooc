@@ -1,0 +1,5 @@
+virtualenv 
+-> encapsula uma instalação num determinado diretório
+-> é como se fosse uma cópia da instalação python em um local específico e isolado, então todos os pacotes usados no projeto serão instalados num único diretório sem influenciar no "python global"
+-> bom para gerenciar vários projetos aonde possuem dependências que causam problemas, exemplo um projeto usando django 1.5 e o outro 1.6
+-> parametro -p indica qual o python do virtualenv
