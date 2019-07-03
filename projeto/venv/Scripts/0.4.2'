@@ -1,0 +1,57 @@
+Collecting package metadata: ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: C:\Users\mayar\Miniconda3
+
+  added / updated specs:
+    - testpath
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    bzip2-1.0.6                |       hfa6e2cd_5         145 KB
+    certifi-2019.6.16          |           py37_0         155 KB
+    conda-4.7.5                |           py37_0         3.0 MB
+    conda-package-handling-1.3.10|           py37_0         280 KB
+    libarchive-3.3.3           |       h0643e63_5         1.4 MB
+    lz4-c-1.8.1.2              |       h2fa13f4_0         217 KB
+    lzo-2.10                   |       h6df0209_2         154 KB
+    python-libarchive-c-2.8    |           py37_6          20 KB
+    testpath-0.4.2             |           py37_0          92 KB
+    tqdm-4.32.1                |             py_0          48 KB
+    xz-5.2.4                   |       h2fa13f4_4         812 KB
+    zstd-1.3.7                 |       h508b16e_0         536 KB
+    ------------------------------------------------------------
+                                           Total:         6.9 MB
+
+The following NEW packages will be INSTALLED:
+
+  bzip2              pkgs/main/win-64::bzip2-1.0.6-hfa6e2cd_5
+  conda-package-han~ pkgs/main/win-64::conda-package-handling-1.3.10-py37_0
+  libarchive         pkgs/main/win-64::libarchive-3.3.3-h0643e63_5
+  lz4-c              pkgs/main/win-64::lz4-c-1.8.1.2-h2fa13f4_0
+  lzo                pkgs/main/win-64::lzo-2.10-h6df0209_2
+  python-libarchive~ pkgs/main/win-64::python-libarchive-c-2.8-py37_6
+  testpath           pkgs/main/win-64::testpath-0.4.2-py37_0
+  tqdm               pkgs/main/noarch::tqdm-4.32.1-py_0
+  xz                 pkgs/main/win-64::xz-5.2.4-h2fa13f4_4
+  zstd               pkgs/main/win-64::zstd-1.3.7-h508b16e_0
+
+The following packages will be UPDATED:
+
+  conda                    conda-forge::conda-4.6.14-py37_0 --> pkgs/main::conda-4.7.5-py37_0
+  openssl            conda-forge::openssl-1.1.1b-hfa6e2cd_2 --> pkgs/main::openssl-1.1.1c-he774522_1
+
+The following packages will be SUPERSEDED by a higher-priority channel:
+
+  ca-certificates    conda-forge::ca-certificates-2019.6.1~ --> pkgs/main::ca-certificates-2019.5.15-0
+  certifi                                       conda-forge --> pkgs/main
+
+
+Proceed ([y]/n)? Deseja finalizar o arquivo em lotes (S/N)? 
+Deseja finalizar o arquivo em lotes (S/N)? 
+Deseja finalizar o arquivo em lotes (S/N)? 

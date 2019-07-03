@@ -1,0 +1,25 @@
+O QuerySet é um objeto que representa uma consulta no banco de dados, ela acumula os parâmetros da consulta que o Django vai fazer. Quando você faz um "for" em cima dela ela vai de fato no banco de dados traz a lista de valores.
+
+O Manager é uma camada a mais que o Django escolheu na sua arquitetura. O Model não tem acesso diretamente a uma QuerySet, apenas acessa um atributo objects que é uma instância do Manager e ele sim tem a lógica de criar a QuerySet para o dado modelo, é apenas uma camada a mais na abstração. 
+
+courses (variável) é uma QuerySet que armazena a consulta de todos os elementos da tabela representada pelo modelo Courses.
+
+Courses.objects é um manager que irá formar a QuerySet de acordo com o método: all (vem tudo), filter (vai filtrar)...
+
+Em geral você sempre que quiser consultar o banco de dados vai chamar o model (Courses) e depois chamar o manager (Courses.objects) e ai o manager vai ter alguns métodos como o all, filter, exclude... que irão retornar uma queryset ai você terá a consulta numa variável e pode fazer um for ou qualquer outra coisa
+
+-------------- MYSQL ------------------
+
+1 - Instale o mysqlclient: pip install mysqlclient
+
+2 - Depois mude a settings.py:
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'nome-do-banco-de-dados',
+        'HOST': 'host-do-banco-de-dados',
+        "USER": "usuario-do-banco",
+        "PASSWORD": "senha-do-usuario"
+    }
+}
