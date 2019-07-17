@@ -18,8 +18,11 @@ class Course(models.Model):
 
 	#TextField = não possui tamanho máximo
 	#blank = campo não obrigatório
-	description = models.TextField('Descrição', 
+	description = models.TextField('Descrição Simples', 
 		blank=True)
+
+	#descrição mais longa 
+	about = models.TextField('Sobre o Curso', blank = True)
 
 	#null = indica que no banco de dados ele pode ser null
 	start_date = models.DateField('Data de Início', 
@@ -48,6 +51,13 @@ class Course(models.Model):
 	#ao invés de "CourseObject"
 	def __str__(self):
 		return self.name
+
+	@models.permalink
+	#pega a tupla do return e usa uma função do django 
+	#chamada reverse, que tá no pacote 'from django.core.urlresolvers 
+	#import reverse'
+	def get_absolute_url(self):
+		return ('courses:details', (), {'slug': self.slug})
 
 	class Meta:
 		#opcoes meta do model que o django usa para 

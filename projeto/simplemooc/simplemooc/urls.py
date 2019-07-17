@@ -14,3 +14,7 @@ urlpatterns = patterns('',
     url(r'^cursos/', include('simplemooc.courses.urls', namespace='courses')),
     url(r'^admin/', include(admin.site.urls)),
 )
+
+#se estiver no modo de desenvolvimento
+if settings.DEBUG:
+	urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
