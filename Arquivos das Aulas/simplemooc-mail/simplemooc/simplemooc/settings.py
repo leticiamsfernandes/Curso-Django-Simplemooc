@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'x4x3zd6zg_&120n&&-7)$b2kkz^j84(x)s8btwn_=)96qb$a6z'
+SECRET_KEY = 'w0*l4j1by%k3-21rp+_gb(3(*4lc!dn=2n3el)zm^#qabh2pz8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -36,9 +36,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'simplemooc.core',
-    'simplemooc.accounts',
     'simplemooc.courses',
 )
 
@@ -88,19 +87,13 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'simplemooc', 'media')
 MEDIA_URL = '/media/'
 
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = 'email@gmail.com'
-EMAIL_USE_TLS = True 
+# E-mails
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'Nome <email@gmail.com>'
+EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'email@gmail.com'
 EMAIL_HOST_PASSWORD = 'senha'
 EMAIL_PORT = 587
-CONTACT_EMAIL = 'contato@simplemooc.com' 
 
-#Auth
-
-LOGIN_URL = 'accounts:login'
-LOGIN_REDIRECT_URL = 'core:home'
-#LOGOUT_URL = 'accounts:logout'
+CONTACT_EMAIL = 'contato@simplemooc.com'
