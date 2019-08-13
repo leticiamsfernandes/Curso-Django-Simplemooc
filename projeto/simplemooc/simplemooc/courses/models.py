@@ -1,72 +1,140 @@
 from django.db import models
+from django.conf import settings
+
+from simplemooc.core.mail import send_mail_template
+
 
 class CourseManager(models.Manager):
-	#o manager tem uma querySet que representa a listagem
-	#das referências dos objetos que vem do banco de dados
 
-	def search(self, query):
-		return self.get_queryset().filter(
-			models.Q(name__icontains=query) | \
-			models.Q(description__icontains=query) \
-			)
+    def search(self, query):
+        return self.get_queryset().filter(
+            models.Q(name__icontains=query) | \
+            models.Q(description__icontains=query)
+        )
 
-# Create your models here.
+
 class Course(models.Model):
-	#CharField = campo do tipo char
-	name = models.CharField('Nome', max_length=100)
-	slug = models.SlugField('Atalho')
 
-	#TextField = não possui tamanho máximo
-	#blank = campo não obrigatório
-	description = models.TextField('Descrição Simples', 
-		blank=True)
+    name = models.CharField('Nome', max_length=100)
+    slug = models.SlugField('Atalho')
+    description = models.TextField('Descrição Simples', blank=True)
+    about = models.TextField('Sobre o Curso', blank=True)
+    start_date = models.DateField(
+        'Data de Início', null=True, blank=True
+    )
+    image = models.ImageField(
+        upload_to='courses/images', verbose_name='Imagem',
+        null=True, blank=True
+    )
 
-	#descrição mais longa 
-	about = models.TextField('Sobre o Curso', blank = True)
+    created_at = models.DateTimeField('Criado em', auto_now_add=True)
+    updated_at = models.DateTimeField('Atualizado em', auto_now=True)
 
-	#null = indica que no banco de dados ele pode ser null
-	start_date = models.DateField('Data de Início', 
-		null=True, blank=True)
+    objects = CourseManager()
 
-	#campo do tipo imagem = campo do tipo texto com o caminho da imagem
-	#o django salva imagens no diretório físico
-	#objetos tipo image dependem de uma biblioteca chamada Pillow PARA TRATAMENTO DE IMAGENS
-	#upload_to = caminho no qual o django irá salvar a imagem, necessita de um settings chamado MEDIA_ROOT
-	image = models.ImageField(upload_to='courses/images', 
-		verbose_name='Imagem', null=True, blank=True)
+    def __str__(self):
+        return self.name
 
-	#tipo DateTimeField é data/hora, diferente de DateField
-	created_at = models.DateTimeField('Criado em', 
-		auto_now_add=True)
+    @models.permalink
+    def get_absolute_url(self):
+        return ('courses:details', (), {'slug': self.slug})
 
-	updated_at = models.DateTimeField('Atualizado em', 
-		auto_now=True)
+    class Meta:
+        verbose_name = 'Curso'
+        verbose_name_plural = 'Cursos'
+        ordering = ['name']
 
-	#aqui é definido o .objects como não mais o padrão 
-	#do django, mas sim o que foi criado na classe 
-	#CourseManager()
-	objects=CourseManager()
 
-	#retorna a string contendo o nome do course
-	#ao invés de "CourseObject"
-	def __str__(self):
-		return self.name
+class Enrollment(models.Model):
 
-	@models.permalink
-	#pega a tupla do return e usa uma função do django 
-	#chamada reverse, que tá no pacote 'from django.core.urlresolvers 
-	#import reverse'
-	def get_absolute_url(self):
-		return ('courses:details', (), {'slug': self.slug})
+    STATUS_CHOICES = (
+        (0, 'Pendente'),
+        (1, 'Aprovado'),
+        (2, 'Cancelado'),
+    )
 
-	class Meta:
-		#opcoes meta do model que o django usa para 
-		#determinados fins
-		verbose_name = 'Curso'
-		verbose_name_plural = 'Cursos'
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, verbose_name='Usuário',
+        related_name='enrollments'
+    )
+    course = models.ForeignKey(
+        Course, verbose_name='Curso', related_name='enrollments'
+    )
+    status = models.IntegerField(
+        'Situação', choices=STATUS_CHOICES, default=1, blank=True
+    )
 
-		#ordering -> ordena o padrão que o Django
-		#irá ordenar quando buscar as informações
-		#exemplo: no admin irá aparecer por ordem 
-		#ascendente de nomes
-		ordering = ['name']
+    created_at = models.DateTimeField('Criado em', auto_now_add=True)
+    updated_at = models.DateTimeField('Atualizado em', auto_now=True)
+
+    def active(self):
+        self.status = 1
+        self.save()
+
+    def is_approved(self):
+        return self.status == 1
+
+    class Meta:
+        verbose_name = 'Inscrição'
+        verbose_name_plural = 'Inscrições'
+        unique_together = (('user', 'course'),)
+
+
+class Announcement(models.Model):
+
+    course = models.ForeignKey(
+        Course, verbose_name='Curso', related_name='announcements'
+    )
+    title = models.CharField('Título', max_length=100)
+    content = models.TextField('Conteúdo')
+
+    created_at = models.DateTimeField('Criado em', auto_now_add=True)
+    updated_at = models.DateTimeField('Atualizado em', auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Anúncio'
+        verbose_name_plural = 'Anúncios'
+        ordering = ['-created_at']
+
+
+class Comment(models.Model):
+
+    announcement = models.ForeignKey(
+        Announcement, verbose_name='Anúncio', related_name='comments'
+    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='usuário')
+    comment = models.TextField('Comentário')
+
+    created_at = models.DateTimeField('Criado em', auto_now_add=True)
+    updated_at = models.DateTimeField('Atualizado em', auto_now=True)
+
+    class Meta:
+        verbose_name = 'Comentário'
+        verbose_name_plural = 'Comentários'
+        ordering = ['created_at']
+
+
+def post_save_announcement(instance, created, 
+    **kwargs):
+    if created:
+        subject = instance.title
+        context = {
+            'announcement': instance
+        }
+        template_name = 'courses/announcement_mail.html'
+        enrollments = Enrollment.objects.filter(
+            course=instance.course, status=1
+        )
+        for enrollment in enrollments:
+            recipient_list = [enrollment.user.email]
+            send_mail_template(subject, 
+                template_name, context, 
+                recipient_list)
+
+models.signals.post_save.connect(
+    post_save_announcement, sender=Announcement,
+    dispatch_uid='post_save_announcement'
+)
